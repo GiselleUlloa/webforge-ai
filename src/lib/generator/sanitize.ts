@@ -36,7 +36,13 @@ export function sanitizeFragment(input: string): string {
     output = stripTagContent(output, tag);
   }
 
-  output = output.replaceAll("javascript:", "").replaceAll("JAVASCRIPT:", "");
+  output = output
+    .replaceAll("javascript:", "")
+    .replaceAll("JAVASCRIPT:", "")
+    .replaceAll("vbscript:", "")
+    .replaceAll("VBSCRIPT:", "")
+    .replaceAll("data:", "")
+    .replaceAll("DATA:", "");
 
   return output.trim();
 }
