@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     const zip = await createProjectZip(body.project);
 
-    return new NextResponse(zip, {
+    return new NextResponse(new Uint8Array(zip), {
       headers: {
         "Content-Type": "application/zip",
         "Content-Disposition": 'attachment; filename="webforge-project.zip"',
