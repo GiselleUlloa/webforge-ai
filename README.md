@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WebForge AI
 
-## Getting Started
+Free and open-source AI website builder.
 
-First, run the development server:
+**Tagline:** Turn ideas into websites.
+
+WebForge AI lets you describe a website in natural language, generate a responsive site, preview it, edit it with follow-up instructions, inspect source code, and download the result.
+
+## Why this exists
+
+Website creation should be accessible, modifiable, and ownership-friendly. WebForge AI focuses on practical generation and exportable code so users avoid vendor lock-in.
+
+## Core workflow
+
+**Describe → Generate → Preview → Edit → Download**
+
+## MVP features
+
+- Landing page with prompt-first UX and open-source positioning
+- AI website generation via server-side provider abstraction
+- Secure sandboxed preview (desktop/tablet/mobile)
+- AI editing of existing generated project
+- Code viewer with Monaco Editor
+- ZIP export with project files
+
+## Tech stack
+
+- Next.js (App Router)
+- TypeScript
+- React
+- Tailwind CSS
+- API Routes
+- Monaco Editor (`@monaco-editor/react`)
+
+## Architecture overview
+
+```text
+src/
+├── app/
+│   ├── api/
+│   │   ├── generate/route.ts
+│   │   ├── edit/route.ts
+│   │   └── export/route.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   └── webforge-app.tsx
+├── lib/
+│   ├── ai/
+│   │   ├── provider.ts
+│   │   ├── openai.ts
+│   │   ├── gemini.ts
+│   │   ├── ollama.ts
+│   │   └── index.ts
+│   ├── generator/
+│   │   ├── project.ts
+│   │   └── sanitize.ts
+│   └── export/
+│       └── zip.ts
+└── types/
+    └── project.ts
+```
+
+## Install locally
+
+1. Clone the repository.
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Configure environment variables:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Start development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configure an AI provider
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Set `AI_PROVIDER` in `.env.local`:
 
-## Learn More
+- `mock` (default fallback)
+- `openai`
+- `gemini`
+- `ollama`
 
-To learn more about Next.js, take a look at the following resources:
+Then set matching provider credentials in `.env.local`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> API keys remain server-side and are never exposed in frontend code.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Security approach
 
-## Deploy on Vercel
+- Provider credentials stay in server environment variables
+- User input is validated in API routes
+- Generated content is sanitized before preview composition
+- Preview runs inside sandboxed iframe isolation
+- Generated code is exported as files, never executed server-side
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Development
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Lint: `npm run lint`
+- Build: `npm run build`
+
+## Contributing
+
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Roadmap
+
+Planned future extensions (not in this MVP):
+
+- GitHub export
+- Templates and community template gallery
+- Project history
+- User accounts
+- Local-first Ollama workflows
+- Additional providers
+- One-click deployment
+- Import existing sites
+- Visual editing
+- AI accessibility and SEO assistants
+
+## License
+
+MIT. See [LICENSE](./LICENSE).
