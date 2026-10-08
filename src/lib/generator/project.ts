@@ -346,10 +346,16 @@ export function editProjectFromPrompt(
   }
 
   if (lowerInstruction.includes("hero")) {
-    nextProject.html = nextProject.html.replace(
-      /<p class="eyebrow">[\s\S]*?<\/p>/,
-      `<p class="eyebrow">Updated by AI edit</p>`,
-    );
+    const eyebrowStart = nextProject.html.indexOf('<p class="eyebrow">');
+    if (eyebrowStart !== -1) {
+      const eyebrowEnd = nextProject.html.indexOf("</p>", eyebrowStart);
+      if (eyebrowEnd !== -1) {
+        nextProject.html =
+          nextProject.html.slice(0, eyebrowStart) +
+          '<p class="eyebrow">Updated by AI edit</p>' +
+          nextProject.html.slice(eyebrowEnd + 4);
+      }
+    }
   }
 
   return {

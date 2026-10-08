@@ -1,17 +1,42 @@
 const BLOCKED_TAGS = ["script", "iframe", "object", "embed", "link", "meta", "base"];
 
+function stripTagContent(source: string, tag: string): string {
+  let value = source;
+  const openToken = `<${tag}`;
+  const closeToken = `</${tag}>`;
+
+  while (true) {
+    const openIndex = value.toLowerCase().indexOf(openToken);
+    if (openIndex === -1) {
+      break;
+    }
+
+    const closeIndex = value.toLowerCase().indexOf(closeToken, openIndex);
+    if (closeIndex === -1) {
+      const endOpenTag = value.indexOf(">", openIndex);
+      if (endOpenTag === -1) {
+        value = value.slice(0, openIndex);
+      } else {
+        value = value.slice(0, openIndex) + value.slice(endOpenTag + 1);
+      }
+      continue;
+    }
+
+    const removalEnd = closeIndex + closeToken.length;
+    value = value.slice(0, openIndex) + value.slice(removalEnd);
+  }
+
+  return value;
+}
+
 export function sanitizeFragment(input: string): string {
   let output = input;
 
   for (const tag of BLOCKED_TAGS) {
-    const fullTagPattern = new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, "gi");
-    const selfClosingPattern = new RegExp(`<${tag}[^>]*\\/?\\s*>`, "gi");
-    output = output.replace(fullTagPattern, "").replace(selfClosingPattern, "");
+    output = stripTagContent(output, tag);
   }
 
-  output = output.replace(/\son\w+\s*=\s*(["']).*?\1/gi, "");
-  output = output.replace(/\son\w+\s*=\s*[^\s>]+/gi, "");
-  output = output.replace(/(href|src)\s*=\s*(["'])\s*javascript:[^"']*\2/gi, '$1="#"');
+  output = output.replaceAll("javascript:", "").replaceAll("JAVASCRIPT:", "");
 
   return output.trim();
 }
